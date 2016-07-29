@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function ($scope, $location, $rootScope, spUtil, $interpolate) {
+	var c = this;
+	
+	// Get a random id
+	c.generatedChartID = _generateUUID();
+	// We need to make sure that our element actually exists before we try to attach highcharts to it
+	var checkExist = setInterval(function() {
+		if ($('#' + c.generatedChartID).length) {
+			clearInterval(checkExist);
+			var chart = new Highcharts.Chart({
+				chart: {
+					renderTo: c.generatedChartID,
+					plotBackgroundColor: null,
+					plotBorderWidth: 0,
+					plotShadow: false
+				},
+				title: {
+					text: c.options.chart_title,
+					align: 'center',
+					verticalAlign: 'middle',
+					y: 40
+				},
+				tooltip: {
+					pointFormat: '{series.name}: <b>{point.y}</b>'
+				},
+				plotOptions: {
+					pie: {
+						dataLabels: {
+							enabled: true,
+							distance: 25,
+							format: '<b>{point.name}</b><br />{point.percentage:.1f} %',
+								style: {
+								fontWeight: 'bold',
+								color: 'black',
+							}
+						},
+						startAngle: -90,
+						endAngle: 90,
+						center: ['50%', '75%'],
+						showInLegend: true
+					}
+				},
+				series: [{
+					type: 'pie',
+					innerSize: '50%',
+					data:c.data.chartData
+				}]
+			});
+			
+			//If we're in editor mode don't refresh automatically
+			if(! $location.url().match("/sp/editor"))
+				setInterval(function(){c.server.update(); chart.series[0].setData(c.data.chartData,true);}, c.options.refresh_rate);
+			
+		}
+	}, 100);
+	
+	function _generateUUID() {
+		var d = new Date().getTime();
+		var uuid = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			var r = (d + Math.random()*16)%16 | 0;
+			d = Math.floor(d/16);
+			return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+		});
+		return uuid;
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.panel {&#13;
+position: relative;&#13;
+}&#13;
+&#13;
+.panel-heading i {&#13;
+  cursor: pointer;&#13;
+  position: absolute;&#13;
+  padding: 10px;&#13;
+  top: 0px;&#13;
+  right: 0px;  &#13;
+  cursor: pointer;&#13;
+}&#13;
+&#13;
+.disabled-filter {&#13;
+	color: #A0A0A0;&#13;
+}&#13;
+&#13;
+.list-group-item.ng-enter {&#13;
+  transition: all 1s;&#13;
+  -webkit-transition: all 1s;&#13;
+&#13;
+  background-color: #c0dcfa;&#13;
+}&#13;
+&#13;
+.list-group-item.ng-enter-active {&#13;
+  background-color: #fff;&#13;
+}&#13;
+&#13;
+.hide-x-overflow {&#13;
+  overflow-x: hidden;&#13;
+}&#13;
+&#13;
+.translated-html &gt; p {&#13;
+  margin: 0px;&#13;
+  padding: 0px;&#13;
+}&#13;
+&#13;
+IMG {&#13;
+  max-width: 320px;&#13;
+  max-height: 240px;&#13;
+}&#13;
+&#13;
+IMG.img-sm {&#13;
+  max-height: 40px;&#13;
+  max-width: 40px;&#13;
+}&#13;
+&#13;
+.filter-box {&#13;
+  margin-top: 10px;&#13;
+}</css>
+        <data_table>x_7912_sphighchart_instance_of_sphighcharts</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>table,sys_name</field_list>
+        <has_preview>false</has_preview>
+        <id>sphighcharts</id>
+        <internal>false</internal>
+        <link/>
+        <name>HighCharts Realtime</name>
+        <option_schema>[{"hint":"","name":"chart_title","label":"Chart Title","type":"string"},{"hint":"Supply an encoded query","name":"filter","label":"Filter","type":"string"},{"displayValue":"Incident","hint":"What value should the chart display","name":"group_by","label":"Group By","type":"string","value":"incident"},{"hint":"How often should the chart be redrawn with updates","name":"refresh_rate","label":"Refresh Rate","type":"integer"}]</option_schema>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function () {	
+		var count = new GlideAggregate(options.table);
+		count.addEncodedQuery(options.filter);
+		count.addAggregate('COUNT', options.group_by);
+		count.query();
+		
+		chartData = [];
+		while (count.next()) {
+			chartDataPair = [];
+			var state = count.state;
+			var stateCount = count.getAggregate('COUNT',options.group_by);
+			chartDataPair.push(count[options.group_by].getDisplayValue());
+			chartDataPair.push(parseInt(stateCount));
+			chartData.push(chartDataPair);
+		}
+		
+		data.chartData = chartData;
+
+})()]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-07-29 15:13:07</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>fee590a34f302200b6c878e18110c7c7</sys_id>
+        <sys_mod_count>18</sys_mod_count>
+        <sys_name>HighCharts Realtime</sys_name>
+        <sys_package display_value="SPHighCharts" source="x_7912_sphighchart">5a9554a34f302200b6c878e18110c781</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="SPHighCharts">5a9554a34f302200b6c878e18110c781</sys_scope>
+        <sys_update_name>sp_widget_fee590a34f302200b6c878e18110c7c7</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2016-07-29 16:42:23</sys_updated_on>
+        <template><![CDATA[<div id={{c.generatedChartID}} style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto">
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

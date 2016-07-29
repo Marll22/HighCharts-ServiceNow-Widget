@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_documentation element="" label="Instance of SPHighCharts" language="en" table="x_7912_sphighchart_instance_of_sphighcharts">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element/>
+            <help/>
+            <hint/>
+            <label>Instance of SPHighCharts</label>
+            <language>en</language>
+            <name>x_7912_sphighchart_instance_of_sphighcharts</name>
+            <plural>Instance of SPHighCharts</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2016-07-29 15:15:17</sys_created_on>
+            <sys_customer_update>false</sys_customer_update>
+            <sys_id>a2665ca34f302200b6c878e18110c7ea</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Instance of SPHighCharts</sys_name>
+            <sys_package display_value="SPHighCharts" source="x_7912_sphighchart">5a9554a34f302200b6c878e18110c781</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="SPHighCharts">5a9554a34f302200b6c878e18110c781</sys_scope>
+            <sys_update_name>sys_documentation_x_7912_sphighchart_instance_of_sphighcharts__en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2016-07-29 15:15:17</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

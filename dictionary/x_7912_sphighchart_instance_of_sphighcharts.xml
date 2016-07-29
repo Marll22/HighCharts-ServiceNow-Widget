@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element attributes="update_synch=true" extends="sp_instance_table" label="Instance of SPHighCharts" max_length="40" name="x_7912_sphighchart_instance_of_sphighcharts" type="collection"/>
+</database>
