@@ -4,58 +4,69 @@
         <client_script><![CDATA[function ($scope, $location, $rootScope, spUtil, $interpolate) {
 	var c = this;
 	
+	// Watch for record changes
+	spUtil.recordWatch($scope, c.options.table, c.options.filter);
+	
+	// If our chart data changes, update the chart
+	$scope.$watch(
+	"c.data.chartData",
+	function handleFooChange( newValue, oldValue ) {
+		if(c.chart)
+			c.chart.series[0].setData(c.data.chartData,true);
+	}
+	);
+	
 	// Get a random id
 	c.generatedChartID = _generateUUID();
 	// We need to make sure that our element actually exists before we try to attach highcharts to it
 	var checkExist = setInterval(function() {
 		if ($('#' + c.generatedChartID).length) {
 			clearInterval(checkExist);
-			var chart = new Highcharts.Chart({
-				chart: {
-					renderTo: c.generatedChartID,
-					plotBackgroundColor: null,
-					plotBorderWidth: 0,
-					plotShadow: false
-				},
-				title: {
-					text: c.options.chart_title,
-					align: 'center',
-					verticalAlign: 'top',
-					y: 20
-				},
-				tooltip: {
-					pointFormat: '{series.name}: <b>{point.y}</b>'
-				},
-				plotOptions: {
-					pie: {
-						dataLabels: {
-							enabled: true,
-							distance: 25,
-							format: '<b>{point.name}</b><br />{point.percentage:.1f} %',
-								style: {
-								fontWeight: 'bold',
-								color: 'black',
-							}
-						},
-						startAngle: -90,
-						endAngle: 90,
-						center: ['50%', '75%'],
-						showInLegend: true
-					}
-				},
-				series: [{
-					type: 'pie',
-					innerSize: '50%',
-					data:c.data.chartData
-				}]
-			});
-			
-			//If we're in editor mode don't refresh automatically
-			if(! $location.url().match("/sp/editor"))
-				setInterval(function(){c.server.update(); chart.series[0].setData(c.data.chartData,true);}, c.options.refresh_rate);
-			
+			_createChart();
 		}
 	}, 100);
+	
+	function _createChart(){
+		c.chart = new Highcharts.Chart({
+			chart: {
+				renderTo: c.generatedChartID,
+				plotBackgroundColor: null,
+				plotBorderWidth: 0,
+				plotShadow: false
+			},
+			title: {
+				text: c.options.chart_title,
+				align: 'center',
+				verticalAlign: 'top',
+				y: 20
+			},
+			tooltip: {
+				pointFormat: '{series.name}: <b>{point.y}</b>'
+			},
+			plotOptions: {
+				pie: {
+					dataLabels: {
+						enabled: true,
+						distance: 25,
+						format: '<b>{point.name}</b><br />{point.percentage:.1f} %',
+							style: {
+							fontWeight: 'bold',
+							color: 'black',
+						}
+					},
+					startAngle: -90,
+					endAngle: 90,
+					center: ['50%', '75%'],
+					showInLegend: true
+				}
+			},
+			series: [{
+				type: 'pie',
+				innerSize: '50%',
+				data:c.data.chartData
+			}]
+		});
+	}
 	
 	function _generateUUID() {
 		var d = new Date().getTime();
@@ -68,56 +79,7 @@
 	}
 }]]></client_script>
         <controller_as>c</controller_as>
-        <css>.panel {&#13;
-position: relative;&#13;
-}&#13;
-&#13;
-.panel-heading i {&#13;
-  cursor: pointer;&#13;
-  position: absolute;&#13;
-  padding: 10px;&#13;
-  top: 0px;&#13;
-  right: 0px;  &#13;
-  cursor: pointer;&#13;
-}&#13;
-&#13;
-.disabled-filter {&#13;
-	color: #A0A0A0;&#13;
-}&#13;
-&#13;
-.list-group-item.ng-enter {&#13;
-  transition: all 1s;&#13;
-  -webkit-transition: all 1s;&#13;
-&#13;
-  background-color: #c0dcfa;&#13;
-}&#13;
-&#13;
-.list-group-item.ng-enter-active {&#13;
-  background-color: #fff;&#13;
-}&#13;
-&#13;
-.hide-x-overflow {&#13;
-  overflow-x: hidden;&#13;
-}&#13;
-&#13;
-.translated-html &gt; p {&#13;
-  margin: 0px;&#13;
-  padding: 0px;&#13;
-}&#13;
-&#13;
-IMG {&#13;
-  max-width: 320px;&#13;
-  max-height: 240px;&#13;
-}&#13;
-&#13;
-IMG.img-sm {&#13;
-  max-height: 40px;&#13;
-  max-width: 40px;&#13;
-}&#13;
-&#13;
-.filter-box {&#13;
-  margin-top: 10px;&#13;
-}</css>
+        <css/>
         <data_table>x_7912_sphighchart_instance_of_sphighcharts</data_table>
         <demo_data/>
         <description/>
@@ -128,7 +90,7 @@ IMG.img-sm {&#13;
         <internal>false</internal>
         <link/>
         <name>HighCharts Realtime</name>
-        <option_schema>[{"hint":"","name":"chart_title","label":"Chart Title","type":"string"},{"hint":"Supply an encoded query","name":"filter","label":"Filter","type":"string"},{"displayValue":"Incident","hint":"What value should the chart display","name":"group_by","label":"Group By","type":"string","value":"incident"},{"hint":"How often should the chart be redrawn with updates","name":"refresh_rate","label":"Refresh Rate","type":"integer"}]</option_schema>
+        <option_schema>[{"hint":"","name":"chart_title","label":"Chart Title","type":"string"},{"hint":"Supply an encoded query","name":"filter","label":"Filter","type":"string"},{"displayValue":"Incident","hint":"What value should the chart display","name":"group_by","label":"Group By","type":"string","value":"incident"}]</option_schema>
         <public>true</public>
         <roles/>
         <script><![CDATA[(function () {	
@@ -156,7 +118,7 @@ IMG.img-sm {&#13;
         <sys_created_on>2016-07-29 15:13:07</sys_created_on>
         <sys_customer_update>true</sys_customer_update>
         <sys_id>fee590a34f302200b6c878e18110c7c7</sys_id>
-        <sys_mod_count>21</sys_mod_count>
+        <sys_mod_count>31</sys_mod_count>
         <sys_name>HighCharts Realtime</sys_name>
         <sys_package display_value="SPHighCharts" source="x_7912_sphighchart">5a9554a34f302200b6c878e18110c781</sys_package>
         <sys_policy/>
@@ -164,7 +126,7 @@ IMG.img-sm {&#13;
         <sys_scope display_value="SPHighCharts">5a9554a34f302200b6c878e18110c781</sys_scope>
         <sys_update_name>sp_widget_fee590a34f302200b6c878e18110c7c7</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2016-08-09 20:55:39</sys_updated_on>
+        <sys_updated_on>2016-08-12 18:44:32</sys_updated_on>
         <template><![CDATA[<div id={{c.generatedChartID}} style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto">
 </div>
 ]]></template>
